@@ -24,12 +24,10 @@ export const Bill = () => {
     const { search, pathname } = useLocation();
     const navigate = useNavigate();
     const isEdit = pathname.includes("edit");
-    console.log(isEdit);
-    const { EbRecord,setEBRecord,refresh } = useEBData();
+    const { EbRecord,refresh } = useEBData();
     let billId = search.split("=")[1];
     const findById = (id) => {
         let record = EbRecord.find(record => record._id === id);
-        console.log(record);
         if (record) {
             return record
         }
@@ -44,7 +42,6 @@ export const Bill = () => {
         }
     }
     const [data, setData] = useState(findById(billId));
-    console.log(data);
 
     const handleChange = (e) => {
         setData({ ...data, [e.target.name]: e.target.value });

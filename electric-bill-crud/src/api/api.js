@@ -1,10 +1,14 @@
 import axios from "axios";
 import { url } from "../config";
 
-export const getRecords = async ({ sort, page, limit }) => { 
+export const getRecords = async ({ sort=false, page=1, limit=9 }) => { 
     try {
-        const response = await axios.get(`${url}?sort=${sort}&?page=${page}&?limit=${limit}`);
-        console.log(response);
+        let newUrl = `?page=${page}&limit=${limit}`;
+        if (sort) {
+            newUrl += `&sort=${sort}`;
+        }
+        
+        const response = await axios.get(`${url}${newUrl}`);
         if(response.status === 200) {
             return response.data;
         }
@@ -12,7 +16,7 @@ export const getRecords = async ({ sort, page, limit }) => {
             return {success:false};
         }
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         return {
             success: false,
             message: error.message
@@ -30,7 +34,7 @@ export const createRecord = async (data) => {
             return { success: false };
         }
     } catch (error) {
-       console.log(error);
+    //    console.log(error);
        return {
            success: false,
            message: error.message
@@ -41,7 +45,6 @@ export const createRecord = async (data) => {
 export const updateRecord = async (id, data) => { 
     try {
         const response = await axios.put(`${url}/${id}/edit`, data);
-        console.log(response);
         if(response.status === 200) {
             return response.data;
         }
@@ -49,7 +52,7 @@ export const updateRecord = async (id, data) => {
             return {success:false};
         }
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         return {
             success: false,
             message: error.message
@@ -60,7 +63,6 @@ export const updateRecord = async (id, data) => {
 export const deleteRecord = async (id) => { 
     try {
         const response = await axios.delete(`${url}/delete/${id}`);
-        console.log(response);
         if(response.status === 200) {
             return response.data;
         }
@@ -68,7 +70,7 @@ export const deleteRecord = async (id) => {
             return {success:false};
         }
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         return {
             success: false,
             message: error.message

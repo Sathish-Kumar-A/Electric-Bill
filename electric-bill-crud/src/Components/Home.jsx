@@ -2,19 +2,28 @@ import React from 'react';
 import toast from "react-hot-toast";
 import { useEBData } from '../Context';
 import { getRecords } from '../api/api';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate,useLocation} from 'react-router-dom';
 import { Record } from './Record';
+import { useEffect } from 'react';
 
 export const Home = () => {
     const headers = ["","Bill Date", "Paid Date", "Unit Consumed", "Amount",""];
-    const { EbRecord, setEBRecord } = useEBData();
+    const { EbRecord, setEBRecord, totalPages, refresh,} = useEBData();
     const navigate = useNavigate();
-    // console.log(EbRecord);
+    const {pathname} = useLocation();
+    let page = pathname.split("/")[1] || 1;
+    const paginateArray = Array(totalPages).fill(0);
+    
+    useEffect(() => {
+            (async () => {
+                await refresh(); 
+            })()
+    },[page])
 
     const sortByAmount = async() => {
-        let response = await getRecords({sort:"amount"});
-            if(response.success) {
-                setEBRecord(response.data);
+        let response = await getRecords({sort:"amount",page:page});
+        if (response.success) {
+            setEBRecord(response.data["records"]);
                 toast.success("Sorted");
         }
             else {
@@ -22,7 +31,7 @@ export const Home = () => {
         }
      }
   return (
-      <div className='w-full'>
+      <div className='w-full bg-primary'>
           <div className='flex items-center justify-between py-4'>
               <p className='text-[18px] font-bold'>Manage Electric Bill</p>
               <div className='flex'>
@@ -60,6 +69,15 @@ export const Home = () => {
             </table>
             {EbRecord.length===0 && <p className='text-center py-5'>No Records</p>}
               
+          </div>
+          <div className='flex space-x-3 pb-3 w-[200px] overflow-auto my-2 mx-auto'>
+              {
+              paginateArray.map((page, index) => { 
+                  return (
+                      <p className='bg-orange-400 px-2 py-1 text-white rounded-sm cursor-pointer' key={index} onClick={()=>navigate(`/${index+1}`)}>{index+1}</p>
+                  )
+              })
+          }
           </div>
     </div>
   )

@@ -16,6 +16,7 @@ export const Record = ({ billDate, paidDate, unitConsumed, amount,id }) => {
     const deleteRecordComp = async () => { 
         const response = await deleteRecord(id);
         if (response.success) { 
+            
             await refresh();
             toast.success("Record deleted");
         }

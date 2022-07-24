@@ -6,11 +6,17 @@ const readAllRecords = async (req, res) => {
         const sortBasedOn = {
             [sort]: 1
         }
-        const records = await EBSchema.find().sort(sortBasedOn).skip((page - 1) * limit).limit(limit);
+        const records = await EBSchema.find().skip((page - 1) * limit).limit(limit).sort(sortBasedOn);
+        const totalRecords = await EBSchema.countDocuments();
+        let totalPages = Math.ceil(totalRecords / (limit || 9));
+        let data = {
+            records: records,
+            totalPages: totalPages
+        }
         res.status(200).send({
             success: true,
             message: "All records fetched successfully",
-            data: records
+            data: data
         });   
     }
     catch (err) { 

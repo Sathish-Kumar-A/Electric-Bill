@@ -6,7 +6,6 @@ const dotenv = require("dotenv");
 const Router = require("./routes");
 dotenv.config();
 const { MONGO_URI: url, PORT } = process.env;
-// console.log(url);
 
 
 app.use(cors());
